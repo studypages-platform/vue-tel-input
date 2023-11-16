@@ -1,82 +1,39 @@
 <template>
   <div :class="['vue-tel-input', styleClasses, { disabled: disabled }]">
-    <div v-click-outside="clickedOutside"
-         aria-label="Country Code Selector"
-         aria-haspopup="listbox"
-         :aria-expanded="open"
-         role="button"
-         :class="['vti__dropdown', { open: open, disabled: dropdownOptions.disabled }]"
-         :tabindex="dropdownOptions.tabindex"
-         @keydown="keyboardNav"
-         @click="toggleDropdown"
-         @keydown.space="toggleDropdown"
-         @keydown.esc="reset"
-         @keydown.tab="reset">
+    <div v-click-outside="clickedOutside" aria-label="Country Code Selector" aria-haspopup="listbox" :aria-expanded="open"
+      role="button" :class="['vti__dropdown', { open: open, disabled: dropdownOptions.disabled }]"
+      :tabindex="dropdownOptions.tabindex" @keydown="keyboardNav" @click="toggleDropdown" @keydown.space="toggleDropdown"
+      @keydown.esc="reset" @keydown.tab="reset">
       <span class="vti__selection">
-          <span
-            v-if="dropdownOptions.showFlags"
-            :class="['vti__flag', activeCountryCode.toLowerCase()]"
-          ></span>
-      <span v-if="dropdownOptions.showDialCodeInSelection" class="vti__country-code">
-            +{{ activeCountry && activeCountry.dialCode }}
-          </span>
-      <slot name="arrow-icon"
-            :open="open">
-        <span class="vti__dropdown-arrow">{{ open ? "▲" : "▼" }}</span>
-      </slot>
+        <span v-if="dropdownOptions.showFlags" :class="['vti__flag', activeCountryCode.toLowerCase()]"></span>
+        <span v-if="dropdownOptions.showDialCodeInSelection" class="vti__country-code">
+          +{{ activeCountry && activeCountry.dialCode }}
+        </span>
+        <slot name="arrow-icon" :open="open">
+          <span class="vti__dropdown-arrow">{{ open ? "▲" : "▼" }}</span>
+        </slot>
       </span>
-      <ul v-if="open"
-          ref="list"
-          class="vti__dropdown-list"
-          :class="dropdownOpenDirection"
-          role="listbox">
-        <input
-            v-if="dropdownOptions.showSearchBox"
-            class="vti__input vti__search_box"
-            aria-label="Search by country name or country code"
-            :placeholder="sortedCountries.length ? sortedCountries[0].name : ''"
-            type="text"
-            v-model="searchQuery"
-            @click.stop
-        />
-        <li v-for="(pb, index) in sortedCountries"
-            role="option"
-            :class="['vti__dropdown-item', getItemClass(index, pb.iso2)]"
-            :key="pb.iso2 + (pb.preferred ? '-preferred' : '')"
-            tabindex="-1"
-            @click="choose(pb)"
-            @mousemove="selectedIndex = index"
-            :aria-selected="activeCountryCode === pb.iso2 && !pb.preferred">
-          <span
-              v-if="dropdownOptions.showFlags"
-              :class="['vti__flag', pb.iso2.toLowerCase()]"
-            ></span>
+      <ul v-if="open" ref="list" class="vti__dropdown-list" :class="dropdownOpenDirection" role="listbox">
+        <input v-if="dropdownOptions.showSearchBox" class="vti__input vti__search_box"
+          aria-label="Search by country name or country code"
+          :placeholder="sortedCountries.length ? sortedCountries[0].name : ''" type="text" v-model="searchQuery"
+          @click.stop />
+        <li v-for="(pb, index) in sortedCountries" role="option"
+          :class="['vti__dropdown-item', getItemClass(index, pb.iso2)]"
+          :key="pb.iso2 + (pb.preferred ? '-preferred' : '')" tabindex="-1" @click="choose(pb)"
+          @mousemove="selectedIndex = index" :aria-selected="activeCountryCode === pb.iso2 && !pb.preferred">
+          <span v-if="dropdownOptions.showFlags" :class="['vti__flag', pb.iso2.toLowerCase()]"></span>
           <strong>{{ pb.name }}</strong>
           <span v-if="dropdownOptions.showDialCodeInList"> +{{ pb.dialCode }} </span>
         </li>
       </ul>
     </div>
-    <input v-model="phone"
-           ref="input"
-           :type="inputOptions.type"
-           :autocomplete="inputOptions.autocomplete"
-           :autofocus="inputOptions.autofocus"
-           :class="['vti__input', inputOptions.styleClasses]"
-           :disabled="disabled"
-           :id="inputOptions.id"
-           :maxlength="inputOptions.maxlength"
-           :name="inputOptions.name"
-           :placeholder="parsedPlaceholder"
-           :readonly="inputOptions.readonly"
-           :required="inputOptions.required"
-           :tabindex="inputOptions.tabindex"
-           :value="modelValue"
-           :aria-describedby="inputOptions['aria-describedby']"
-           @blur="onBlur"
-           @focus="onFocus"
-           @input="onInput"
-           @keyup.enter="onEnter"
-           @keyup.space="onSpace" />
+    <input v-model="phone" ref="input" :type="inputOptions.type" :autocomplete="inputOptions.autocomplete"
+      :autofocus="inputOptions.autofocus" :class="['vti__input', inputOptions.styleClasses]" :disabled="disabled"
+      :id="inputOptions.id" :maxlength="inputOptions.maxlength" :name="inputOptions.name" :placeholder="parsedPlaceholder"
+      :readonly="inputOptions.readonly" :required="inputOptions.required" :tabindex="inputOptions.tabindex"
+      :value="modelValue" :aria-describedby="inputOptions['aria-describedby']" @blur="onBlur" @focus="onFocus"
+      @input="onInput" @keyup.enter="onEnter" @keyup.space="onSpace" />
     <slot name="icon-right"></slot>
   </div>
 </template>
@@ -183,7 +140,7 @@ export default {
   data() {
     return {
       phone: '',
-      activeCountryCode: '',
+      activeCountryCode: 'US',
       open: false,
       finishMounted: false,
       selectedIndex: null,
@@ -410,7 +367,7 @@ export default {
         if (this.autoDefaultCountry) {
           getCountry()
             .then((res) => {
-              this.choose(res || this.activeCountryCode);
+              this.choose(this.activeCountryCode);
             })
             .catch((error) => {
               console.warn(error);
