@@ -3277,6 +3277,10 @@ const Kt = {
     styleClasses: {
       type: [String, Array, Object],
       default: () => s("styleClasses")
+    },
+    dropDownListClasses: {
+      type: [String, Array, Object],
+      default: ""
     }
   },
   data() {
@@ -3557,7 +3561,7 @@ function e1(e, d, t, n, r, i) {
       r.open ? (h(), p("ul", {
         key: 0,
         ref: "list",
-        class: b(["vti__dropdown-list", r.dropdownOpenDirection]),
+        class: b(["vti__dropdown-list", [r.dropdownOpenDirection, t.dropDownListClasses]]),
         role: "listbox"
       }, [
         t.dropdownOptions.showSearchBox ? R((h(), p("input", {
