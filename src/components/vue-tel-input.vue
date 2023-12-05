@@ -13,7 +13,8 @@
           <span class="vti__dropdown-arrow">{{ open ? "▲" : "▼" }}</span>
         </slot>
       </span>
-      <ul v-if="open" ref="list" class="vti__dropdown-list" :class="dropdownOpenDirection" role="listbox">
+      <ul v-if="open" ref="list" class="vti__dropdown-list" :class="[dropdownOpenDirection, dropDownListClasses]"
+        role="listbox">
         <input v-if="dropdownOptions.showSearchBox" class="vti__input vti__search_box"
           aria-label="Search by country name or country code"
           :placeholder="sortedCountries.length ? sortedCountries[0].name : ''" type="text" v-model="searchQuery"
@@ -136,6 +137,10 @@ export default {
       type: [String, Array, Object],
       default: () => getDefault('styleClasses'),
     },
+    dropDownListClasses: {
+      type: [String, Array, Object],
+      default: '',
+    }
   },
   data() {
     return {
